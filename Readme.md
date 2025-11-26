@@ -131,9 +131,11 @@ From a risk perspective, the most serious problems are in the backend API (unbou
 
 **Implication:** users can unknowingly use the calculator over unencrypted HTTP, exposing traffic to interception or modification on untrusted networks.
 
-### 4.3 HTTP Method Analysis
-- **GET Request:** Returns the full `200 OK` HTML body. This indicates the `/factorial` route shares the same view handler as the home page or lacks a specific method filter for API clients.
-- **PUT/DELETE Requests:** Correctly return `405 Method Not Allowed`, indicating basic method restrictions are in place (Positive Finding).
+### 4.3 HTTP Method & Protocol Analysis
+
+- **Ambiguous Routing (GET):** Sending a `GET` request to `/factorial` returns the full HTML homepage (`200 OK`) instead of a JSON response or `405 Method Not Allowed`. This violates API separation of concerns.
+- **Plain HTTP Exposure:** The server accepts requests via `http://` (e.g., `/about`) and returns `200 OK` with content instead of a `301 Redirect`. This confirms the server lacks forced HTTPS redirection, exposing traffic to interception.
+- **Method Enforcement (Pass):** The server correctly rejects `PUT` and `DELETE` requests with `405 Method Not Allowed`, indicating basic method restrictions are functioning.
 
 ---
 
@@ -168,4 +170,3 @@ From a risk perspective, the most serious problems are in the backend API (unbou
 - **Clean up footer:** Update the copyright logic to display a single year when the start and current years match.
 
 Once the backend recursion and validation issues are addressed and error states are surfaced clearly in the UI, the calculator will be much closer to being reliable enough for regular use. The remaining UX/navigation improvements can then be treated as a second wave of polish.
-
