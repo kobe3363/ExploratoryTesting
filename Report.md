@@ -84,8 +84,8 @@ From a risk perspective, the most serious problems are in the backend API (unbou
 
 | ID | Defect | Evidence | Technical Root Cause |
 | :--- | :--- | :--- | :--- |
-| **UI-01** | **“Infinity” limit exposed to user** | Input `171` | Due to 64-bit floating-point limits (~\\(1.79 \\times 10^{308}\\)), factorials above 170 overflow and the backend returns `Infinity`, which is rendered directly in the UI instead of a controlled error or warning. |
-| **UI-02** | **Stale success state after failure** | Enter `3` → Calculate → then enter `-1` → Calculate | After a successful calculation (e.g., `3! = 6`), submitting an invalid value like `-1` causes the backend to return `500`, but the UI continues to display the previous result (`6`). There is no error state or clearing of the old value, so the page appears to have accepted the invalid input. |
+| **UI-01** | **“Infinity” limit exposed to user** | Input `171` | Due to 64-bit floating-point limits ($> 1.79 \times 10^{308}$), factorials above 170 overflow. The backend returns `Infinity`, which the UI renders directly instead of showing a helpful error. |
+| **UI-02** | **Stale State / Silent Failure on Error** | Input `-1` after `6` | Negative numbers pass client-side validation but crash the server (`500 Error`). The UI lacks an AJAX `.fail()` handler, so it ignores the error and leaves the previous result (e.g., `6! = 720`) on screen, misleading the user. |
 
 ---
 
