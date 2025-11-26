@@ -86,7 +86,6 @@ From a risk perspective, the most serious problems are in the backend API (unbou
 | :--- | :--- | :--- | :--- |
 | **UI-01** | **“Infinity” limit exposed to user** | Input `171` | Due to 64-bit floating-point limits (~\\(1.79 \\times 10^{308}\\)), factorials above 170 overflow and the backend returns `Infinity`, which is rendered directly in the UI instead of a controlled error or warning. |
 | **UI-02** | **Stale success state after failure** | Enter `3` → Calculate → then enter `-1` → Calculate | After a successful calculation (e.g., `3! = 6`), submitting an invalid value like `-1` causes the backend to return `500`, but the UI continues to display the previous result (`6`). There is no error state or clearing of the old value, so the page appears to have accepted the invalid input. |
-| **UI-03** | **Client/server validation mismatch** | Input `-1` | Client-side validation uses `parseInt` on the string, which happily converts `"-1"` to `-1` and allows the request to be sent. The backend, however, cannot handle negative values and responds with `500`, leading to inconsistent behaviour and confusing feedback. |
 
 ---
 
