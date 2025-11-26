@@ -74,6 +74,7 @@ From a risk perspective, the most serious problems are in the backend API (unbou
 | **API-02** | **Type injection → 500 error** | `number="HELLO"` or other non-numeric strings | Request body is not validated server-side. The code appears to cast `request.form["number"]` directly to an integer, causing a `ValueError` that is not caught and surfaces as a `500 Internal Server Error`. |
 | **API-03** | **Missing parameter → 500 error** | Empty POST body or missing `number` field | No defensive check for required parameters. Accessing `request.form["number"]` raises `KeyError` when the field is absent; the exception is not handled and returns `500`. |
 | **API-04** | **Negative number → 500 error** | Input `-1` | Negative inputs are accepted by the API but not handled in the factorial algorithm (e.g., recursive descent below zero), resulting in an unbounded recursion or math-domain condition and a `500` response. |
+| **API-05** | **Ambiguous Resource Mapping (GET)** | `GET /factorial` | The API endpoint returns the full HTML homepage instead of a JSON response or `405 Method Not Allowed`, violating standard API separation of concerns. |
 
 ---
 
@@ -130,6 +131,10 @@ From a risk perspective, the most serious problems are in the backend API (unbou
 - There is no automatic redirect to HTTPS and no HSTS header observed in responses.
 
 **Implication:** users can unknowingly use the calculator over unencrypted HTTP, exposing traffic to interception or modification on untrusted networks.
+
+### 4.3 HTTP Method Analysis
+- **GET Request:** Returns the full `200 OK` HTML body. This indicates the `/factorial` route shares the same view handler as the home page or lacks a specific method filter for API clients.
+- **PUT/DELETE Requests:** Correctly return `405 Method Not Allowed`, indicating basic method restrictions are in place (Positive Finding).
 
 ---
 
